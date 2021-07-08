@@ -28,23 +28,26 @@ namespace WebApplication2.Controllers
             new WeatherForecast { Date = DateTime.Now.AddDays(2), Summary = "Item 3", TemperatureC = 54 }
         };
 
+        private readonly List<WeatherForecast> _weathers2 = new() { };
+
         [HttpGet]
         public IActionResult Get()
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using (var package = new ExcelPackage(new FileInfo("MyWorkbook.xlsx")))
+            using (var package = new ExcelPackage(new MemoryStream()))
             {
                 // Tabs
-                var equity = package.Workbook.Worksheets.Add("Equity").GenerateWorksheet(_pessoas);
-                var coveredCallWarrant = package.Workbook.Worksheets.Add("Covered Call Warrant").GenerateWorksheet(_weathers);
-                var equityOptions = package.Workbook.Worksheets.Add("Equity Options").GenerateWorksheet(_pessoas);
-                var risk = package.Workbook.Worksheets.Add("Risk by Position Types").GenerateWorksheet(_weathers);
-                var collateralPosition = package.Workbook.Worksheets.Add("Collateral Position").GenerateWorksheet(_pessoas);
-                var marginSumm = package.Workbook.Worksheets.Add("Margin Summary").GenerateWorksheet(_weathers);
+                package.Workbook.Worksheets.GenerateWorksheet(_pessoas, "Equity");
+                package.Workbook.Worksheets.GenerateWorksheet(_weathers, "Covered Call Warrant");
+                package.Workbook.Worksheets.GenerateWorksheet(_pessoas, "Equity Options");
+                package.Workbook.Worksheets.GenerateWorksheet(_weathers, "Risk by Position Types");
+                package.Workbook.Worksheets.GenerateWorksheet(_pessoas, "Collateral Position");
+                package.Workbook.Worksheets.GenerateWorksheet(_weathers, "Margin Summary");
+                package.Workbook.Worksheets.GenerateWorksheet(_weathers2, "Teste");
 
                 var byteArray = package.GetAsByteArray();
 
-                return File(byteArray, "application/excel", "MyWorkbook.xlsx");
+                return File(byteArray, "application/excel", "MinhaCaceta.xlsx");
             }
         }
 

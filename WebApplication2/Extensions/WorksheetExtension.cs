@@ -5,10 +5,15 @@ namespace WebApplication2.Extensions
 {
     public static class WorksheetExtension
     {
-        public static ExcelWorksheet GenerateWorksheet<T>(this ExcelWorksheet worksheet, List<T> data)
+        public static ExcelWorksheets GenerateWorksheet<T>(this ExcelWorksheets worksheet, List<T> data, string nameOfWorksheet)
         {
-            worksheet.Cells.LoadFromCollection(data, true);
-            return worksheet;
+            if (data.Count != 0)
+            {
+                worksheet.Add(nameOfWorksheet).Cells.LoadFromCollection(data, true);
+                return worksheet;
+            }
+
+            return null;
         }
     }
 }
